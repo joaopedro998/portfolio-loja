@@ -1,10 +1,23 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 from models import db
-from routes import api 
+from routes import api
+from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+# Configuração do Cloudinary usando as variáveis do .env
+cloudinary.config(
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.getenv('CLOUDINARY_API_KEY'),
+    api_secret = os.getenv('CLOUDINARY_API_SECRET')
+)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///loja.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
