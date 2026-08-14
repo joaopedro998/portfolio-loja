@@ -19,14 +19,22 @@ cloudinary.config(
     api_secret = os.getenv('CLOUDINARY_API_SECRET')
 )
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///loja.db'
+# Verifica a variável de ambiente para decidir qual banco usar (Memória x Arquivo real)
+if os.environ.get('TESTING') == 'true':
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    app.config['TESTING'] = True
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///loja.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-with app.app_context():
-    db.create_all()
-    print("Tabelas do banco de dados verificadas/criadas com sucesso!")
+# Só conecta e cria tabelas no arquivo físico se NÃO estivermos no modo de teste
+if os.environ.get('TESTING') != 'true':
+    with app.app_context():
+        db.create_all()
+        print("Tabelas do banco de dados verificadas/criadas com sucesso!")
 
 @app.route('/', methods=['GET'])
 def home():
