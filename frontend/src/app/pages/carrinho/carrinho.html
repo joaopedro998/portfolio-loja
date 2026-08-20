@@ -1,0 +1,34 @@
+<div class="container">
+  <header class="cabecalho">
+    <h1>Seu Carrinho</h1>
+    <button class="btn-voltar" routerLink="/">🔙 Voltar para Vitrine</button>
+  </header>
+
+  <main *ngIf="itensCarrinho.length > 0; else carrinhoVazio">
+    <div class="lista-itens">
+      <div class="item-carrinho" *ngFor="let item of itensCarrinho">
+        <div class="item-info">
+          <h3>{{ item.nome }}</h3>
+          <p>Quantidade: {{ item.quantidade }}</p>
+        </div>
+        <div class="item-preco">
+          <p>{{ (item.preco * item.quantidade) | currency:'BRL':'symbol':'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="resumo-pedido">
+      <h2>Total: {{ total | currency:'BRL':'symbol':'1.2-2' }}</h2>
+      <button class="btn-whatsapp" (click)="finalizarPedido()">
+        Finalizar no WhatsApp 💬
+      </button>
+    </div>
+  </main>
+
+  <ng-template #carrinhoVazio>
+    <div class="vazio">
+      <p>Seu carrinho está muito triste e vazio. 😢</p>
+      <button class="btn-voltar" routerLink="/">Ir às compras!</button>
+    </div>
+  </ng-template>
+</div>

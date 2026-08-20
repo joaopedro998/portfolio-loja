@@ -1,0 +1,22 @@
+<div class="container">
+  <header class="cabecalho">
+    <h1>Vitrine da Loja</h1>
+    <!-- O routerLink nos leva direto para a tela do carrinho sem recarregar a página -->
+    <button class="btn-carrinho" routerLink="/carrinho">🛒 Ir para o Carrinho</button>
+  </header>
+
+  <main class="grid-produtos">
+    <!-- O Angular vai repetir essa div "card" para cada produto na lista -->
+    <div class="card" *ngFor="let produto of produtos">
+      <img [src]="produto.imagem" alt="Foto do produto">
+      
+      <div class="card-info">
+        <h3>{{ produto.nome }}</h3>
+        <!-- O pipe 'currency' formata o número automático para R$ -->
+        <p class="preco">{{ produto.preco | currency:'BRL':'symbol':'1.2-2' }}</p>
+        
+        <button class="btn-comprar" (click)="adicionarAoCarrinho(produto)">Adicionar</button>
+      </div>
+    </div>
+  </main>
+</div>

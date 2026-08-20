@@ -1,6 +1,3 @@
-from models import db, Categoria, Produto
-from models import db, Categoria, Produto, Pedido, ItemPedido
-
 def test_criar_categoria_com_sucesso(client):
     # PREPARAÇÃO & AÇÃO: Simulamos o envio de um JSON para a nossa rota
     resposta = client.post('/api/categorias', json={
