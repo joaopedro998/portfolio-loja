@@ -2,6 +2,9 @@ from flask import Blueprint, request, jsonify
 from models import db, Categoria, Produto
 import cloudinary.uploader
 from models import ImagemProduto
+from models import db, Categoria, Produto
+from models import db, Categoria, Produto, Pedido, ItemPedido
+
 
 # Cria um Blueprint chamado 'api'
 api = Blueprint('api', __name__)
@@ -69,4 +72,53 @@ def upload_imagens(produto_id):
     return jsonify({
         "mensagem": "Imagens salvas com sucesso!", 
         "urls": urls_salvas
+    }), 201
+@api.route('/pedidos', methods=['POST'])
+def criar_pedido():
+    dados = request.get_json()
+
+    # 1. Validação de segurança: o carrinho não pode estar vazio
+    if not dados or 'itens' not in dados or len(dados['itens']) == 0:
+        return jsonify({'erro': 'O carrinho está vazio ou dados inválidos'}), 400
+
+    # 2. Cria o pedido "vazio" primeiro
+    novo_pedido = Pedido(status='Pendente')
+    db.session.add(novo_pedido)
+    
+    # O flush() envia para o banco provisoriamente só para gerar o ID do pedido, 
+    # pois precisamos desse ID para atrelar aos itens na próxima etapa!
+    db.session.flush() 
+
+    total_pedido = 0
+
+    # 3. Percorre cada item que veio do Front-end (Angular)
+    for item_data in dados['itens']:
+        produto = db.session.get(Produto, item_data['produto_id'])
+        
+        if not produto:
+            db.session.rollback() # Cancela tudo se achar alguma fraude/erro
+            return jsonify({'erro': f'Produto ID {item_data["produto_id"]} não encontrado'}), 404
+
+        quantidade = item_data.get('quantidade', 1)
+        preco_seguro = produto.preco # Pegamos o preço direto do banco!
+
+        # 4. Cria o item e atrela ao pedido recém-criado
+        novo_item = ItemPedido(
+            pedido_id=novo_pedido.id,
+            produto_id=produto.id,
+            quantidade=quantidade,
+            preco_unitario=preco_seguro
+        )
+        db.session.add(novo_item)
+        
+        # Vai somando o valor total para podermos retornar isso ao Angular
+        total_pedido += (preco_seguro * quantidade)
+
+    # 5. Salva tudo de forma definitiva
+    db.session.commit()
+
+    return jsonify({
+        'mensagem': 'Pedido criado com sucesso!',
+        'pedido_id': novo_pedido.id,
+        'total': round(total_pedido, 2)
     }), 201
