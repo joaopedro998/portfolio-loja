@@ -1,80 +1,183 @@
 .container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 40px 20px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #111;
 }
 
-.cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 10px;
+.navegacao-topo {
+  margin-bottom: 40px;
 }
 
 .btn-voltar {
-  background: none;
-  border: 1px solid #ccc;
-  padding: 8px 15px;
-  border-radius: 6px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   cursor: pointer;
+  transition: color 0.2s;
 }
 
 .btn-voltar:hover {
-  background: #f9f9f9;
+  color: #111;
+  font-weight: bold;
+}
+
+.titulo-pagina {
+  font-weight: 300;
+  font-size: 32px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 20px;
+}
+
+/* Divide a tela: 2 partes para os itens, 1 parte para o resumo */
+.carrinho-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 60px;
+  align-items: start;
 }
 
 .item-carrinho {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #eaeaea;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  padding: 25px 0;
+  border-bottom: 1px solid #eaeaea;
 }
 
 .item-info h3 {
-  margin: 0 0 5px 0;
-  color: #333;
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.item-qtd {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
 }
 
 .item-preco {
   font-size: 18px;
-  font-weight: bold;
-  color: #e63946;
+  font-weight: 600;
 }
 
+/* Caixinha lateral do resumo */
 .resumo-pedido {
-  margin-top: 30px;
-  text-align: right;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
+  background: #fcfcfc;
+  padding: 30px;
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
 }
 
+.resumo-pedido h2 {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.total-linha {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  border-top: 1px solid #eaeaea;
+  padding-top: 20px;
+}
+
+/* Botão do WhatsApp modernizado */
 .btn-whatsapp {
-  background-color: #25d366;
+  width: 100%;
+  padding: 20px;
+  background: #25d366; 
   color: white;
   border: none;
-  padding: 15px 30px;
-  font-size: 18px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   font-weight: bold;
-  border-radius: 8px;
   cursor: pointer;
-  margin-top: 15px;
-  transition: transform 0.2s;
+  transition: background 0.3s;
 }
 
 .btn-whatsapp:hover {
-  transform: scale(1.05);
+  background: #1da851;
 }
 
+/* Estilos para o carrinho vazio */
 .vazio {
   text-align: center;
-  padding: 50px;
-  font-size: 20px;
-  color: #666;
+  padding: 80px 20px;
+}
+
+.vazio p {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.btn-comprar-grande {
+  padding: 15px 40px;
+  background: #111;
+  color: white;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-comprar-grande:hover {
+  background: #333;
+}
+
+/* Responsividade para celular */
+@media (max-width: 768px) {
+  .carrinho-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+.opcoes-checkout {
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.opcoes-checkout label {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 8px;
+  margin-top: 25px;
+}
+
+.select-checkout {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 14px;
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+  background-color: transparent;
+  color: #111;
+  outline: none;
+  cursor: pointer;
+  appearance: auto;
+  transition: border-color 0.3s;
+}
+
+.select-checkout:focus {
+  border-color: #111;
 }

@@ -1,15 +1,17 @@
 <div class="container">
-  <header class="cabecalho">
-    <h1>Seu Carrinho</h1>
-    <button class="btn-voltar" routerLink="/">🔙 Voltar para Vitrine</button>
-  </header>
+  <div class="navegacao-topo">
+    <button class="btn-voltar" routerLink="/">🔙 Voltar para a Vitrine</button>
+  </div>
 
-  <main *ngIf="itensCarrinho.length > 0; else carrinhoVazio">
+  <h1 class="titulo-pagina">Seu Carrinho</h1>
+
+  <main *ngIf="itensCarrinho.length > 0; else carrinhoVazio" class="carrinho-grid">
+    <!-- Esquerda: Lista de Itens -->
     <div class="lista-itens">
       <div class="item-carrinho" *ngFor="let item of itensCarrinho">
         <div class="item-info">
           <h3>{{ item.nome }}</h3>
-          <p>Quantidade: {{ item.quantidade }}</p>
+          <p class="item-qtd">Quantidade: {{ item.quantidade }}</p>
         </div>
         <div class="item-preco">
           <p>{{ (item.preco * item.quantidade) | currency:'BRL':'symbol':'1.2-2' }}</p>
@@ -17,18 +19,46 @@
       </div>
     </div>
 
+    <!-- Direita: Resumo e Checkout -->
     <div class="resumo-pedido">
-      <h2>Total: {{ total | currency:'BRL':'symbol':'1.2-2' }}</h2>
+      <h2>Resumo do Pedido</h2>
+      
+      <!-- NOVAS OPÇÕES DE CHECKOUT -->
+      <div class="opcoes-checkout">
+        <label for="entrega">Opção de Entrega:</label>
+        <!-- O [(ngModel)] liga essa caixinha diretamente à variável do TypeScript -->
+        <select id="entrega" [(ngModel)]="tipoEntrega" class="select-checkout">
+          <option value="" disabled selected>Selecione...</option>
+          <option value="Vou buscar na loja">Vou buscar na loja</option>
+          <option value="Entrega no meu endereço">Entrega no meu endereço</option>
+        </select>
+
+        <label for="pagamento">Forma de Pagamento:</label>
+        <select id="pagamento" [(ngModel)]="formaPagamento" class="select-checkout">
+          <option value="" disabled selected>Selecione...</option>
+          <option value="PIX">PIX</option>
+          <option value="Cartão de Crédito / Maquininha">Cartão de Crédito</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
+      </div>
+      <!-- FIM DAS NOVAS OPÇÕES -->
+      
+      <div class="total-linha">
+        <span>Total</span>
+        <span>{{ total | currency:'BRL':'symbol':'1.2-2' }}</span>
+      </div>
+      
       <button class="btn-whatsapp" (click)="finalizarPedido()">
         Finalizar no WhatsApp 💬
       </button>
     </div>
   </main>
 
+  <!-- Tela alternativa se o carrinho estiver vazio -->
   <ng-template #carrinhoVazio>
     <div class="vazio">
-      <p>Seu carrinho está muito triste e vazio. 😢</p>
-      <button class="btn-voltar" routerLink="/">Ir às compras!</button>
+      <p>Seu carrinho está vazio no momento.</p>
+      <button class="btn-comprar-grande" routerLink="/">Continuar Comprando</button>
     </div>
   </ng-template>
 </div>

@@ -1,21 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+// 1. Importamos o FormsModule para conseguir ler as caixinhas de seleção
+import { FormsModule } from '@angular/forms'; 
 import { CarrinhoService } from '../../services/carrinho';
 
 @Component({
   selector: 'app-carrinho',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  // 2. Adicionamos o FormsModule aqui nos imports
+  imports: [CommonModule, RouterModule, FormsModule], 
   templateUrl: './carrinho.html',
   styleUrls: ['./carrinho.css']
 })
 export class Carrinho implements OnInit {
   itensCarrinho: any[] = [];
   total: number = 0;
-
-  // Substitua pelo número real das donas depois (com DDI e DDD, ex: 5535999999999)
   numeroWhatsApp = '5535900000000'; 
+
+  // Variáveis para guardar as escolhas do cliente
+  formaPagamento: string = '';
+  tipoEntrega: string = '';
 
   constructor(private carrinhoService: CarrinhoService) {}
 
@@ -34,7 +39,12 @@ export class Carrinho implements OnInit {
       return;
     }
 
-    // 1. Monta o texto do pedido
+    // 3. Validação: obriga o cliente a escolher as opções antes de ir pro WhatsApp
+    if (!this.formaPagamento || !this.tipoEntrega) {
+      alert('Por favor, selecione o tipo de entrega e a forma de pagamento para continuar.');
+      return;
+    }
+
     let texto = `Olá! Gostaria de finalizar um pedido.%0A%0A`;
     texto += `*Resumo da Compra:*%0A`;
     
@@ -42,15 +52,15 @@ export class Carrinho implements OnInit {
       texto += `- ${item.quantidade}x ${item.nome} (R$ ${item.preco.toFixed(2)})%0A`;
     });
 
-    texto += `%0A*Total: R$ ${this.total.toFixed(2)}*`;
+    texto += `%0A*Total: R$ ${this.total.toFixed(2)}*%0A%0A`;
+    
+    // 4. Adiciona as escolhas no texto da mensagem
+    texto += `*Entrega:* ${this.tipoEntrega}%0A`;
+    texto += `*Pagamento:* ${this.formaPagamento}`;
 
-    // 2. Cria o link oficial do WhatsApp
     const linkWhatsApp = `https://wa.me/${this.numeroWhatsApp}?text=${texto}`;
-
-    // 3. Abre o link em uma nova aba
     window.open(linkWhatsApp, '_blank');
 
-    // 4. Limpa o carrinho após fechar o pedido
     this.carrinhoService.limparCarrinho();
     this.atualizarCarrinho();
   }

@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="navegacao-topo">
+    <button class="btn-voltar" routerLink="/">🔙 Voltar para Vitrine</button>
+    <button class="btn-carrinho-topo" routerLink="/carrinho">🛒 Carrinho</button>
+  </div>
+
+  <!-- O @if garante que a tela só será desenhada QUANDO o back-end responder -->
+  @if (produto) {
+    <div class="produto-grid">
+      
+      <!-- Lado Esquerdo: Imagem -->
+      <div class="produto-imagem">
+        <img [src]="produto.imagem" [alt]="produto.nome">
+      </div>
+
+      <!-- Lado Direito: Informações -->
+      <div class="produto-info">
+        <h1>{{ produto.nome }}</h1>
+        <p class="preco">{{ produto.preco | currency:'BRL':'symbol':'1.2-2' }}</p>
+        
+        <div class="descricao">
+          <h3>Sobre a peça</h3>
+          <p>{{ produto.descricao }}</p>
+        </div>
+
+        <div class="seletor-tamanhos">
+          <h3>Tamanho: <span class="tamanho-escolhido">{{ tamanhoSelecionado || 'Selecione...' }}</span></h3>
+          
+          <div class="botoes-tamanho">
+            <!-- Puxa os tamanhos que vieram do banco de dados (P, M, G, etc) -->
+            @for (tamanho of produto.tamanhos; track tamanho) {
+              <button 
+                class="btn-tamanho" 
+                [class.ativo]="tamanhoSelecionado === tamanho"
+                (click)="selecionarTamanho(tamanho)">
+                {{ tamanho }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <button 
+          class="btn-comprar-grande" 
+          [class.desativado]="!tamanhoSelecionado"
+          (click)="adicionarAoCarrinho()">
+          {{ tamanhoSelecionado ? 'Adicionar ao Carrinho' : 'Escolha um tamanho' }}
+        </button>
+      </div>
+
+    </div>
+  } @else {
+    <!-- Mensagem de carregamento enquanto o Python busca no banco -->
+    <p style="text-align: center; margin-top: 50px; font-size: 18px;">
+      Carregando detalhes da peça... ⏳
+    </p>
+  }
+</div>

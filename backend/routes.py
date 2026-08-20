@@ -122,3 +122,56 @@ def criar_pedido():
         'pedido_id': novo_pedido.id,
         'total': round(total_pedido, 2)
     }), 201
+
+@api.route('/produtos', methods=['GET'])
+def listar_produtos():
+    produtos = Produto.query.all()
+    lista_produtos = []
+    
+    for p in produtos:
+        # Pega a primeira imagem do banco, se não tiver, usa o placeholder do front-end
+        imagem_url = "https://via.placeholder.com/600"
+        # O try/except garante que o código não quebre se o modelo não tiver a relação 'imagens' ainda
+        try:
+            if p.imagens and len(p.imagens) > 0:
+                imagem_url = p.imagens[0].url_imagem
+        except:
+            pass
+
+        # Monta o produto no exato formato que o Angular espera!
+        lista_produtos.append({
+            "id": p.id,
+            "nome": p.nome,
+            "preco": p.preco,
+            "descricao": "Peça exclusiva de alta qualidade.", # Texto padrão
+            # Transforma "P,M,G" em uma lista de verdade para os botões do Angular
+            "tamanhos": p.tamanhos_disponiveis.split(',') if p.tamanhos_disponiveis else [], 
+            "imagem": imagem_url
+        })
+        
+    return jsonify(lista_produtos), 200
+
+@api.route('/produtos/<int:produto_id>', methods=['GET'])
+def detalhe_produto(produto_id):
+    p = Produto.query.get(produto_id)
+    
+    if not p:
+        return jsonify({"erro": "Produto não encontrado"}), 404
+        
+    imagem_url = "https://via.placeholder.com/600"
+    try:
+        if p.imagens and len(p.imagens) > 0:
+            imagem_url = p.imagens[0].url_imagem
+    except:
+        pass
+        
+    produto_json = {
+        "id": p.id,
+        "nome": p.nome,
+        "preco": p.preco,
+        "descricao": "Peça exclusiva de alta qualidade.",
+        "tamanhos": p.tamanhos_disponiveis.split(',') if p.tamanhos_disponiveis else [],
+        "imagem": imagem_url
+    }
+    
+    return jsonify(produto_json), 200
